@@ -1,0 +1,3 @@
+C:/Users/NinoPinto/CLionProjects/ForestFires/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/NinoPinto/CLionProjects/ForestFires/cmake-build-debug/CMakeFiles/ForestFires.dir
+C:/Users/NinoPinto/CLionProjects/ForestFires/cmake-build-debug/CMakeFiles/edit_cache.dir

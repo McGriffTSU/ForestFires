@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/NinoPinto/CLionProjects/ForestFires/main.cpp
+iostream
+-
+tgmath.h
+-
+fstream
+-
+string
+-
+vector
+-
+
