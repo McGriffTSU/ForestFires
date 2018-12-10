@@ -3,26 +3,48 @@
 #include <fstream>
 #include <string>
 #include <vector>
+struct dataPoint
+{
+    int X;
+    int Y;
+
+    std::string month;
+    std::string day;
+
+    double FFMC;
+    double DMC;
+    double DC;
+    double ISI;
+    double temp;
+    double RH;
+    double wind;
+    double rain;
+    double area;
+
+    dataPoint(int x, int y, std::string m, std::string d, double ffmc, double dmc, double dc, double isi, double t, double rh, double w, double r, double a)
+    {
+        this->X = x;
+        this->Y = y;
+        this->month = m;
+        this->day = d;
+        this->FFMC = ffmc;
+        this->DMC = dmc;
+        this->DC = dc;
+        this->ISI = isi;
+        this->temp = t;
+        this->RH = rh;
+        this->wind = w;
+        this->rain = r;
+        this->area = a;
+    }
+};
+
 
 int main() {
     //Vectors for data read from csv
     int dataPoints = 0;
-
-    std::vector<int> XData;
-    std::vector<int> YData;
-
-    std::vector<std::string> monthData;
-    std::vector<std::string> dayData;
-
-    std::vector<double> FFMCData;
-    std::vector<double> DMCData;
-    std::vector<double> DCData;
-    std::vector<double> ISIData;
-    std::vector<double> tempData;
-    std::vector<double> RHData;
-    std::vector<double> windData;
-    std::vector<double> rainData;
-    std::vector<double> areaData;
+    std::vector<dataPoint> data;
+    std::vector<dataPoint> data_sdev;
 
     //Read data from csv into vectors
     std::fstream infile("forestfires.csv");
@@ -33,19 +55,8 @@ int main() {
     while(infile >> X >> Y >> month >> day >>  FFMC >>  DMC >>  DC >> ISI >>  temp >>  RH >>  wind >>  rain >>  area)
     {
         dataPoints++;
-        XData.push_back(X);
-        YData.push_back(Y);
-        monthData.push_back(month);
-        dayData.push_back(day);
-        FFMCData.push_back(FFMC);
-        DMCData.push_back(DMC);
-        DCData.push_back(DC);
-        ISIData.push_back(ISI);
-        tempData.push_back(temp);
-        RHData.push_back(RH);
-        windData.push_back(wind);
-        rainData.push_back(rain);
-        areaData.push_back(area);
+        dataPoint *incoming = new dataPoint(X, Y, month, day, FFMC, DMC, DC, ISI,temp, RH, wind, rain, area);
+        data.push_back(*incoming);
     }
 
     /*
@@ -56,15 +67,15 @@ int main() {
     double FFMCMean = 0, DMCMean = 0, DCMean = 0, ISIMean = 0, tempMean = 0, RHMean = 0, windMean = 0, rainMean = 0, areaMean = 0;
     for(int i = 0; i < dataPoints; i++)
     {
-        FFMCMean += FFMCData[i];
-        DMCMean += DMCData[i];
-        DCMean += DCData[i];
-        ISIMean += ISIData[i];
-        tempMean += tempData[i];
-        RHMean += RHData[i];
-        windMean += windData[i];
-        rainMean += rainData[i];
-        areaMean += areaData[i];
+        FFMCMean += data[i].FFMC;
+        DMCMean += data[i].DMC;
+        DCMean += data[i].DC;
+        ISIMean += data[i].ISI;
+        tempMean += data[i].temp;
+        RHMean += data[i].RH;
+        windMean += data[i].wind;
+        rainMean += data[i].rain;
+        areaMean += data[i].area;
     }
     FFMCMean /= dataPoints;
     DMCMean /= dataPoints;
@@ -80,15 +91,15 @@ int main() {
     double FFMCSdev = 0, DMCSdev = 0, DCSdev = 0, ISISdev = 0, tempSdev = 0, RHSdev = 0, windSdev = 0, rainSdev = 0, areaSdev = 0;
     for(int i = 0; i < dataPoints; i++)
     {
-        FFMCSdev += (FFMCData[i] - FFMCMean) * (FFMCData[i] - FFMCMean);
-        DMCSdev += (DMCData[i] - DMCMean) * (DMCData[i] - DMCMean);
-        DCSdev += (DCData[i] - DCMean) * (DCData[i] - DCMean);
-        ISISdev += (ISIData[i] - ISIMean) * (ISIData[i] - ISIMean);
-        tempSdev += (tempData[i] - tempMean) * (tempData[i] - tempMean);
-        RHSdev += (RHData[i] - RHMean) * (RHData[i] - RHMean);
-        windSdev += (windData[i] - windMean) * (windData[i] - windMean);
-        rainSdev += (rainData[i] - rainMean) * (rainData[i] - rainMean);
-        areaSdev += (areaData[i] - areaMean) * (areaData[i] - areaMean);
+        FFMCSdev += (data[i].FFMC - FFMCMean) * (data[i].FFMC - FFMCMean);
+        DMCSdev += (data[i].DMC - DMCMean) * (data[i].DMC - DMCMean);
+        DCSdev += (data[i].DC - DCMean) * (data[i].DC - DCMean);
+        ISISdev += (data[i].ISI - ISIMean) * (data[i].ISI - ISIMean);
+        tempSdev += (data[i].temp - tempMean) * (data[i].temp - tempMean);
+        RHSdev += (data[i].RH - RHMean) * (data[i].RH - RHMean);
+        windSdev += (data[i].wind - windMean) * (data[i].wind - windMean);
+        rainSdev += (data[i].rain - rainMean) * (data[i].rain - rainMean);
+        areaSdev += (data[i].area - areaMean) * (data[i].area - areaMean);
     }
     //Calculate standard deviation for each set of variables
     FFMCSdev = sqrt((FFMCSdev/dataPoints));
@@ -101,23 +112,32 @@ int main() {
     rainSdev = sqrt((rainSdev/dataPoints));
     areaSdev = sqrt((areaSdev/dataPoints));
 
-    //Now assign a new value to each data set based on standard deviations from the mean
+    //Now assign a new value to data_sdev based on standard deviations from the mean
+    //So now we have two data sets, data (raw data) and data_sdev (standardized data)
     for(int i = 0; i < dataPoints; i++)
     {
-        FFMCData[i] = (FFMCData[i] - FFMCMean)/FFMCSdev;
-        DMCData[i] = (DMCData[i] - DMCMean)/DMCSdev;
-        DCData[i] = (DCData[i] - DCMean)/DCSdev;
-        ISIData[i] = (ISIData[i] - ISIMean)/ISISdev;
-        tempData[i] = (tempData[i] - tempMean)/tempSdev;
-        RHData[i] = (RHData[i] - RHMean)/RHSdev;
-        windData[i] = (windData[i] - windMean)/windSdev;
-        rainData[i] = (rainData[i] - rainMean)/rainSdev;
-        areaData[i] = (areaData[i] - areaMean)/areaSdev;
+        int x = data[i].X;
+        int y = data[i].Y;
+        std::string m = data[i].month;
+        std::string d = data[i].day;
+        double ffmc = (data[i].FFMC - FFMCMean)/FFMCSdev;
+        double dmc = (data[i].DMC - DMCMean)/DMCSdev;
+        double dc = (data[i].DC - DCMean)/DCSdev;
+        double isi = (data[i].ISI - ISIMean)/ISISdev;
+        double t = (data[i].temp - tempMean)/tempSdev;
+        double rh = (data[i].RH - RHMean)/RHSdev;
+        double w = (data[i].wind - windMean)/windSdev;
+        double r = (data[i].rain - rainMean)/rainSdev;
+        double a = (data[i].area - areaMean)/areaSdev;
+        dataPoint *incoming = new dataPoint(x, y, m, d, ffmc, dmc, dc, isi, t, rh, w, r, a);
+        data_sdev.push_back(*incoming);
     }
 
     /*
      * DATA STANDARDIZATION DONE
      */
+
+    //Detect major fires (area > 50)
 
 
     std::cout << " DONE ";
