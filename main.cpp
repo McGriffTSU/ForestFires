@@ -327,6 +327,10 @@ int main() {
      * PREDICTION ALGORITHMS
      * KNN - Classification (5-NN)
      * K-fold cross-validation (10-fold)
+     *
+     * For this code example I am simply using the first 50 data points to check, and ignoring them in training
+     *
+     * For the other 9 tests I ran, each section of 50 hold-outs were simply removed from
      */
     //Set up K data points to use
     unsigned int k = 50;
@@ -381,6 +385,8 @@ int main() {
     int moderatelow = 0;
     int moderate = 0;
     int severe = 0;
+
+    std::cout << "\n\n";
     for(int i = 0; i < k; i++)
     {
         std::string predicted;
@@ -407,12 +413,12 @@ int main() {
             predicted = "sev ";
         }
 
-        std::cout<< i << predicted << "PREDICTION: " << kcv_avg[i] << "\t" << kcv_sdev_avg[i] << '\n';
+        std::cout<< i+1 << " " << predicted << "PREDICTION: " << kcv_avg[i] << "\t" << kcv_sdev_avg[i] << '\n';
     }
-    std::cout << "\n\nLOW RISK DAYS: " << low << "\n";
-    std::cout << "MODERATE-LOW RISK DAYS: " << moderatelow << "\n";
-    std::cout << "MODERATE RISK DAYS: " << moderate << "\n";
-    std::cout << "SEVERE RISK DAYS: " << severe << "\n";
+    std::cout << "\n\nLOW RISK: " << low << "\n";
+    std::cout << "MODERATE-LOW RISK: " << moderatelow << "\n";
+    std::cout << "MODERATE RISK: " << moderate << "\n";
+    std::cout << "SEVERE RISK: " << severe << "\n";
 }
 
 double dist(dataPoint A, dataPoint B)
